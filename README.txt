@@ -1,4 +1,5 @@
 Install
+
 Please sign up for an account at https://cointopay.com/Signup.jsp Cointopay.com.
 
 Note down the MerchantID, SecurityCode and Currency, information is located in the Account section. These pieces of information are mandatory to be able to connect the payment module to your arastta.
@@ -7,7 +8,7 @@ Note down the MerchantID, SecurityCode and Currency, information is located in t
 
 
 
-**********************************HOW TO INSTALL COINTOPAY PAYMENT METHOD****************************
+********************************** HOW TO INSTALL COINTOPAY PAYMENT METHOD****************************
 
 Required: Arastta Latest Version Installed
 
@@ -16,6 +17,7 @@ Required: Arastta Latest Version Installed
 2:- Find "Extensions" and click on the "Payments" link.
 
 3:- Click on the Upload Extenstion button
+
 4:- Upload file zip file
 
     Installation done!!
@@ -42,4 +44,4 @@ Required: Arastta Latest Version Installed
 
   click on save button.
 
-*************Configuration DONE!!*****************
+************* Configuration DONE!! *****************
