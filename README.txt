@@ -16,7 +16,7 @@ Required: Arastta Latest Version Installed
 2:- Find "Extensions" and click on the "Payments" link.
 
 3:- Click on the Upload Extenstion button
-4:- Upload file 
+4:- Upload file zip file
 
     Installation done!!
 
