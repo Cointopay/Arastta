@@ -120,58 +120,79 @@ class ControllerPaymentCointopay extends Controller {
 		exit;
     }
 	public function callback() {
-		//http://localhost/arastta/index.php?route=payment/cointopay/callback&CustomerReferenceNr=13&TransactionID=230196&status=paid&notenough=1&ConfirmCode=WZVZDJZMHV6PP4QDOINX4YDGK-SHHQPX8CSQTHTUFP8&AltCoinID=1&MerchantID=13659&CoinAddressUsed=3C9fxEdTLmhYZZkCDhy5xuumWzc3v24JCB&SecurityCode=-1132003738&inputCurrency=USD
+		//http://localhost/arastta/index.php?route=payment/cointopay/callback&CustomerReferenceNr=2&TransactionID=230828&status=paid&notenough=1&ConfirmCode=IKTCELAMS0JRX8CMEGPNBGKRG6ZA-JKRMBVZ-UBP9SU&AltCoinID=1&MerchantID=13659&CoinAddressUsed=3C9fxEdTLmhYZZkCDhy5xuumWzc3v24JCB&SecurityCode=-1132003738&inputCurrency=USD
 		$paymentStatus = isset($_GET['status']) ? $_GET['status'] : 'failed'; 
         $notEngough = isset($_GET['notenough']) ? $_GET['notenough'] : '2';
         $transactionID = isset($_GET['TransactionID']) ? $_GET['TransactionID'] : '';
         $orderID = isset($_GET['CustomerReferenceNr']) ? $_GET['CustomerReferenceNr'] : '';
-        $inputCurrency = "&inputCurrency=USD";
+        // load order model
 		$this->load->model('checkout/order');
+       	$order_info = $this->model_checkout_order->getOrder($orderID);
+
+        if(isset($_GET['ConfirmCode']))
+        {
+           	$data = [ 
+		       			'mid' => $this->config->get('cointopay_account') , 
+		       			'TransactionID' => $_GET['TransactionID'] ,
+		       			'ConfirmCode' => $_GET['ConfirmCode'] 
+           			];
+           	$response = $this->validateOrder($data);
        
-    	$order_info = $this->model_checkout_order->getOrder($orderID);
-		//if paid 
-        if($paymentStatus == 'paid' && $notEngough == '0')
-        {
-            $order_status = 5;
-            $comment = "Successfully paid!!";
-            $this->model_checkout_order->addOrderHistory($orderID, $order_status, $comment);
-        }
-   
-        else if ($paymentStatus == 'paid' || $notEngough == '1')
-        {
-            $order_status = 15;
-            $comment = "Low balance!!";
-            $this->model_checkout_order->addOrderHistory($orderID, $order_status, $comment);
-        }
-        elseif ($paymentStatus == 'failed')
-        {
-            $order_status = 10;
-            $comment = "Transaction failed";
-            $this->model_checkout_order->addOrderHistory($orderID, $order_status, $comment);
-        }
-        else
-        {
-            $order_status = 10;
-            $comment = "Transaction failed";
-            $this->model_checkout_order->addOrderHistory($orderID, $order_status, $comment);
-        }
-		
-			// We can't use $this->response->redirect() here, because of 2CO behavior. It fetches this page
-			// on behalf of the user and thus user (and his browser) see this as located at cointopay.com
-			// domain. So user's cookies are not here and he will see empty basket and probably other
-			// weird things.
+           	if($response->Status !== $_GET['status'])
+           	{
+           		echo "We have detected different order status. Your order has been halted.";
+           		exit;
+           	}
+           	if($response->CustomerReferenceNr == $_GET['CustomerReferenceNr'])
+           	{
+           		//if paid 
+		        if($paymentStatus == 'paid' && $notEngough == '0')
+		        {
+		            $order_status = 5;
+		            $comment = "Successfully paid!!";
+		            $this->model_checkout_order->addOrderHistory($orderID, $order_status, $comment);
+		        }
+		   
+		        else if ($paymentStatus == 'paid' || $notEngough == '1')
+		        {
+		            $order_status = 15;
+		            $comment = "Low balance!!";
+		            $this->model_checkout_order->addOrderHistory($orderID, $order_status, $comment);
+		        }
+		        elseif ($paymentStatus == 'failed')
+		        {
+		            $order_status = 10;
+		            $comment = "Transaction failed";
+		            $this->model_checkout_order->addOrderHistory($orderID, $order_status, $comment);
+		        }
+		        else
+		        {
+		            $order_status = 10;
+		            $comment = "Transaction failed";
+		            $this->model_checkout_order->addOrderHistory($orderID, $order_status, $comment);
+		        }
+				
+					// We can't use $this->response->redirect() here, because of 2CO behavior. It fetches this page
+					// on behalf of the user and thus user (and his browser) see this as located at cointopay.com
+					// domain. So user's cookies are not here and he will see empty basket and probably other
+					// weird things.
 
-			echo '<html>' . "\n";
-			echo '<head>' . "\n";
-			echo '  <meta http-equiv="Refresh" content="0; url=' . $this->url->link('checkout/success') . '">' . "\n";
-			echo '</head>' . "\n";
-			echo '<body>' . "\n";
-			echo '  <p>Please follow <a href="' . $this->url->link('checkout/success') . '">link</a>!</p>' . "\n";
-			echo '</body>' . "\n";
-			echo '</html>' . "\n";
-			exit();
-
-		
+					echo '<html>' . "\n";
+					echo '<head>' . "\n";
+					echo '  <meta http-equiv="Refresh" content="0; url=' . $this->url->link('checkout/success') . '">' . "\n";
+					echo '</head>' . "\n";
+					echo '<body>' . "\n";
+					echo '  <p>Please follow <a href="' . $this->url->link('checkout/success') . '">link</a>!</p>' . "\n";
+					echo '</body>' . "\n";
+					echo '</html>' . "\n";
+					exit();
+           	} 
+           	else
+           	{
+           		echo "We have detected changes in order info. Your order has been halted.";
+           		exit;
+           	}
+        }
 	}
 
 	public function calculateRFC2104HMAC($data, $key) 
@@ -180,5 +201,42 @@ class ControllerPaymentCointopay extends Controller {
     	$rawHmac = hash_hmac("sha1", $data, $key, true);
     	// base64-encode the raw hmac
     	return base64_encode($rawHmac);
+    }
+
+    function  validateOrder($data)
+    {
+    	//$this->pp($data);
+    	//https://cointopay.com/v2REAPI?MerchantID=14351&Call=QA&APIKey=_&output=json&TransactionID=230196&ConfirmCode=YGBMWCNW0QSJVSPQBCHWEMV7BGBOUIDQCXGUAXK6PUA
+    	$params = array( 
+        "authentication:1",
+        'cache-control: no-cache',
+        );
+
+		$ch = curl_init();
+		curl_setopt_array($ch, array(
+		CURLOPT_URL => 'https://app.cointopay.com/v2REAPI?',
+		//CURLOPT_USERPWD => $this->apikey,
+		CURLOPT_POSTFIELDS => 'MerchantID='.$data['mid'].'&Call=QA&APIKey=_&output=json&TransactionID='.$data['TransactionID'].'&ConfirmCode='.$data['ConfirmCode'],
+		CURLOPT_RETURNTRANSFER => true,
+		CURLOPT_SSL_VERIFYPEER => false,
+		CURLOPT_HTTPHEADER => $params,
+		CURLOPT_USERAGENT => 1,
+		CURLOPT_HTTPAUTH => CURLAUTH_BASIC
+		)
+		);
+		$response = curl_exec($ch);
+		$results = json_decode($response);
+		if($results->CustomerReferenceNr)
+		{
+			return $results;
+		}
+		echo $response;
+    }
+
+    function pp($data)
+    {
+         echo "<pre>";
+         print_r($data);
+         die('--------------------------');
     }
 }
