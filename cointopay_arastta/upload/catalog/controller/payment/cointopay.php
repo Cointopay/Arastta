@@ -113,14 +113,12 @@ class ControllerPaymentCointopay extends Controller {
 		$results = json_decode($redirect);
 		if($results->RedirectURL)
 		{
-		   //fn_create_payment_form($results->RedirectURL, '', 'Cointopay', false);
 		    header("Location: ".$results->RedirectURL."");
 		}
 		echo $redirect;
 		exit;
     }
 	public function callback() {
-		//http://localhost/arastta/index.php?route=payment/cointopay/callback&CustomerReferenceNr=2&TransactionID=230828&status=paid&notenough=1&ConfirmCode=IKTCELAMS0JRX8CMEGPNBGKRG6ZA-JKRMBVZ-UBP9SU&AltCoinID=1&MerchantID=13659&CoinAddressUsed=3C9fxEdTLmhYZZkCDhy5xuumWzc3v24JCB&SecurityCode=-1132003738&inputCurrency=USD
 		$paymentStatus = isset($_GET['status']) ? $_GET['status'] : 'failed'; 
         $notEngough = isset($_GET['notenough']) ? $_GET['notenough'] : '2';
         $transactionID = isset($_GET['TransactionID']) ? $_GET['TransactionID'] : '';
@@ -194,19 +192,9 @@ class ControllerPaymentCointopay extends Controller {
            	}
         }
 	}
-
-	public function calculateRFC2104HMAC($data, $key) 
-	{
-    	// compute the hmac on input data bytes, make sure to set returning raw hmac to be true
-    	$rawHmac = hash_hmac("sha1", $data, $key, true);
-    	// base64-encode the raw hmac
-    	return base64_encode($rawHmac);
-    }
-
     function  validateOrder($data)
     {
-    	//$this->pp($data);
-    	//https://cointopay.com/v2REAPI?MerchantID=14351&Call=QA&APIKey=_&output=json&TransactionID=230196&ConfirmCode=YGBMWCNW0QSJVSPQBCHWEMV7BGBOUIDQCXGUAXK6PUA
+    	
     	$params = array( 
         "authentication:1",
         'cache-control: no-cache',
