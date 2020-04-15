@@ -45,13 +45,6 @@
             </div>
           </div>
 
-           <div class="form-group">
-            <label class="col-sm-2 control-label" for="input-secret"><span data-toggle="tooltip" title="Your coinotpay API KEY">API Key</span></label>
-            <div class="col-sm-10">
-              <input type="text" name="cointopay_api_key" value="<?php echo $cointopay_api_key; ?>" placeholder="API KEY" id="input-api-key" class="form-control" />
-            </div>
-          </div>
-
         </form>
       </div>
     </div>

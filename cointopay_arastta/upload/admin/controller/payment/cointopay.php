@@ -96,11 +96,6 @@ class ControllerPaymentCointopay extends Controller {
 		} else {
 			$data['cointopay_secret'] = $this->config->get('cointopay_secret');
 		}
-		if (isset($this->request->post['cointopay_api_key'])) {
-			$data['cointopay_api_key'] = $this->request->post['cointopay_api_key'];
-		} else {
-			$data['cointopay_api_key'] = $this->config->get('cointopay_api_key');
-		}
 
 		if (isset($this->request->post['cointopay_display'])) {
 			$data['cointopay_display'] = $this->request->post['cointopay_display'];
