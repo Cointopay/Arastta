@@ -2,7 +2,7 @@ Install
 
 Please sign up for an account at https://cointopay.com/Signup.jsp Cointopay.com.
 
-Please follow the Arastta Cointopay Plugin install instructions mentioned here: <a href="https://docs.google.com/document/d/1UcBnZ0_cKiotz-Its1Evmn1p_Bzlp1bIy7ruBcdy-Jk/edit?usp=sharing">download Arastta Cointopay Plugin documentation</a> or direct link: https://docs.google.com/document/d/1UcBnZ0_cKiotz-Its1Evmn1p_Bzlp1bIy7ruBcdy-Jk/edit?usp=sharing
+Please follow the Arastta Cointopay Plugin install instructions mentioned here:https://docs.google.com/document/d/1UcBnZ0_cKiotz-Its1Evmn1p_Bzlp1bIy7ruBcdy-Jk/edit?usp=sharing download Arastta Cointopay Plugin documentation</a> or direct link: https://docs.google.com/document/d/1UcBnZ0_cKiotz-Its1Evmn1p_Bzlp1bIy7ruBcdy-Jk/edit?usp=sharing
 
 Note down the MerchantID, SecurityCode and Currency, information is located in the Account section. These pieces of information are mandatory to be able to connect the payment module to your arastta.
 
